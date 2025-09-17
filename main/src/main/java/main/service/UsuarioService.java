@@ -1,17 +1,18 @@
 package main.service;
 
-import main.entity.Rol;
 import main.entity.Usuario;
-import main.repository.RolRepository;
+import main.entity.Rol;
 import main.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -20,32 +21,21 @@ public class UsuarioService implements UserDetailsService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private RolRepository rolRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-
-
-
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Usuario usuario = usuarioRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-        // Convertir la colección de roles a un array de Strings
-        String[] roles = usuario.getRoles()
-                .stream()
-                .map(Rol::getNombre) // ROLE_CLIENTE, ROLE_ADMIN, etc.
-                .toArray(String[]::new);
+        // Convertir roles a GrantedAuthority (sin prefijo ROLE_)
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        for (Rol rol : usuario.getRoles()) {
+            authorities.add(new SimpleGrantedAuthority(rol.getNombre())); // SOLO el nombre
+        }
 
-        return org.springframework.security.core.userdetails.User
-                .withUsername(usuario.getEmail())
+        return User.builder()
+                .username(usuario.getEmail())
                 .password(usuario.getPassword())
-                .roles(roles) // aquí usamos todos los roles que tenga el usuario
+                .authorities(authorities) // Usamos authorities en vez de roles
                 .build();
     }
-
 }
