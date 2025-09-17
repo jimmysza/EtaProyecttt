@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Cliente</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<h2>Registro de Cliente</h2>
+<form th:action="@{/registro/cliente}" th:object="${cliente}" method="post">
+
+    <!-- Datos del Usuario -->
+    <fieldset>
+        <legend>Información del Usuario</legend>
+
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" th:field="*{usuario.nombre}" required>
+        <br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" th:field="*{usuario.email}" required>
+        <br>
+
+        <label for="password">Contraseña:</label>
+        <input type="password" th:field="*{usuario.password}" placeholder="Contraseña" required>
+        <br>
+
+        <label for="telefono">Teléfono:</label>
+        <input type="text" th:field="*{usuario.telefono}">
+
+    </fieldset>
+
+    <!-- Datos del Cliente -->
+    <fieldset>
+        <legend>Información del Cliente</legend>
+
+        <label for="cedula">Cédula:</label>
+        <input type="text" id="cedula" name="cedula" th:field="${cliente.cedula}">
+        <br>
+
+        <label for="direccion">Dirección:</label>
+        <input type="text" id="direccion" name="direccion" th:field="${cliente.direccion}">
+        <br>
+
+        <label for="preferencias">Preferencias:</label>
+        <textarea id="preferencias" name="preferencias" th:field="${cliente.preferencias}"></textarea>
+    </fieldset>
+
+    <button type="submit">Registrarse</button>
+</form>
+
+<p>¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión</a></p>
+</body>
+</html>
