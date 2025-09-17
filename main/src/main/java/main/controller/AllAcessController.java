@@ -25,9 +25,20 @@
         }
 
         @GetMapping("/")
-        public String LandingPageAccesso(Model model) {
+        public String landingPage(Model model, Authentication auth) {
+            // Listado de actividades
+            /*model.addAttribute("Actividades", actividadService.listarActividades());*/
+
+            // Nombre de usuario según autenticación
+            if (auth != null && auth.isAuthenticated()) {
+                model.addAttribute("nombreUsuario", auth.getName()); // nombre del usuario
+            } else {
+                model.addAttribute("nombreUsuario", null);
+            }
+
             return "main";
         }
+
 
         // Página de inicio
         @GetMapping("/index")

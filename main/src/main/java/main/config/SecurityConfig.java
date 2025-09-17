@@ -10,11 +10,9 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
 
 @Configuration
 @EnableWebSecurity
@@ -23,16 +21,19 @@ public class SecurityConfig {
     @Autowired
     private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider(UsuarioService usuarioService,
-                                                            PasswordEncoder passwordEncoder) {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(usuarioService);
-        authProvider.setPasswordEncoder(passwordEncoder);
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(usuarioService);
+        authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
 
@@ -46,7 +47,6 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Rutas publicas
                         .requestMatchers(
                                 "/registro/**",
                                 "/login",
@@ -59,19 +59,16 @@ public class SecurityConfig {
                                 "/images/**",
                                 "/"
                         ).permitAll()
-                        // Ver actividades para ambos roles
-                        .requestMatchers("/actividades").hasAnyRole("CLIENTE", "COLABORADOR")
-                        // La vista de crear actividades solo para COLABORADOR
-                        .requestMatchers("/actividades/nueva").hasRole("COLABORADOR")
-                        // Proteger el endpoint POST para guardar la actividad
-                        .requestMatchers(HttpMethod.POST, "/actividades").hasRole("COLABORADOR")
-                        .requestMatchers("/cliente/**").hasRole("CLIENTE")
-                        .requestMatchers("/colaborador/**").hasRole("COLABORADOR")
+                        .requestMatchers("/actividades").hasAnyAuthority("CLIENTE", "COLABORADOR")
+                        .requestMatchers("/actividades/nueva").hasAuthority("COLABORADOR")
+                        .requestMatchers(HttpMethod.POST, "/actividades").hasAuthority("COLABORADOR")
+                        .requestMatchers("/cliente/**").hasAuthority("CLIENTE")
+                        .requestMatchers("/colaborador/**").hasAuthority("COLABORADOR")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .successHandler(customAuthenticationSuccessHandler) // Redirige después del login
+                        .successHandler(customAuthenticationSuccessHandler)
                         .permitAll()
                 )
                 .logout(logout -> logout

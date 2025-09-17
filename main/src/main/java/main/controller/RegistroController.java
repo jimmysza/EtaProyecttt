@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 @Controller
 @RequestMapping("/registro")
 public class RegistroController {
@@ -30,11 +32,13 @@ public class RegistroController {
     }
 
 
-    // Procesar formulario
     @PostMapping("/cliente")
-    public String registrarCliente(@ModelAttribute("cliente") Cliente cliente) {
+    public String registrarCliente(@ModelAttribute("cliente") Cliente cliente,
+                                   RedirectAttributes redirectAttributes) {
         clienteService.registrarCliente(cliente);
+        redirectAttributes.addFlashAttribute("exito", "Cliente registrado con éxito.");
         return "redirect:/clientes/listar";
     }
+
 
 }
