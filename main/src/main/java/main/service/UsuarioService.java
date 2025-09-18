@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -38,4 +39,11 @@ public class UsuarioService implements UserDetailsService {
                 .authorities(authorities) // Usamos authorities en vez de roles
                 .build();
     }
+
+    public Optional<Usuario> findByEmail(String email) {
+        return usuarioRepository.findByEmail(email);
+    }
+
+
+
 }

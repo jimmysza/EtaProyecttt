@@ -56,16 +56,16 @@ public class SecurityConfig {
                                 "/js/**",
                                 "/assets/**",
                                 "/fonts/**",
-                                "/images/**",
-                                "/"
+                                "/images/**"
                         ).permitAll()
-                        .requestMatchers("/actividades").hasAnyAuthority("CLIENTE", "COLABORADOR")
-                        .requestMatchers("/actividades/nueva").hasAuthority("COLABORADOR")
-                        .requestMatchers(HttpMethod.POST, "/actividades").hasAuthority("COLABORADOR")
-                        .requestMatchers("/cliente/**").hasAuthority("CLIENTE")
-                        .requestMatchers("/colaborador/**").hasAuthority("COLABORADOR")
+                        .requestMatchers("/").permitAll() // Público, pero controlamos desde el controller
+                        .requestMatchers("/actividades").hasAnyAuthority("ROLE_CLIENTE", "ROLE_COLABORADOR")
+                        .requestMatchers(HttpMethod.POST, "/actividades").hasAuthority("ROLE_COLABORADOR")
+                        .requestMatchers("/cliente/**").hasAuthority("ROLE_CLIENTE")
+                        .requestMatchers("/colaborador/**","/colaborador/dashboard","/actividades/**").hasAuthority("ROLE_COLABORADOR")
                         .anyRequest().authenticated()
                 )
+
                 .formLogin(form -> form
                         .loginPage("/login")
                         .successHandler(customAuthenticationSuccessHandler)

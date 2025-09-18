@@ -1,9 +1,8 @@
 package main.service;
 
-import main.entity.Cliente;
-import main.entity.Rol;
+import main.entity.Colaborador;
 import main.entity.Usuario;
-import main.repository.ClienteRepository;
+import main.repository.ColaboradorRepository;
 import main.repository.RolRepository;
 import main.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,30 +11,28 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Collections;
 import java.util.Set;
 
 @Service
-public class ClienteService {
+public class ColaboradorService {
 
     private final UsuarioRepository usuarioRepository;
     private final RolRepository rolRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ClienteRepository clienteRepository;
+    private final ColaboradorRepository colaboradorRepository;
 
     @Autowired
-    public ClienteService(UsuarioRepository usuarioRepository,
+    public ColaboradorService(UsuarioRepository usuarioRepository,
                           RolRepository rolRepository,
-                          PasswordEncoder passwordEncoder,
-                          ClienteRepository clienteRepository) {
+                          PasswordEncoder passwordEncoder, ColaboradorRepository colaboradorRepository) {
         this.usuarioRepository = usuarioRepository;
         this.rolRepository = rolRepository;
         this.passwordEncoder = passwordEncoder;
-        this.clienteRepository = clienteRepository;
+        this.colaboradorRepository = colaboradorRepository;
     }
 
-    public Cliente registrarCliente(Cliente cliente) {
-        Usuario usuario = cliente.getUsuario();
+    public Colaborador registrarColaborador(Colaborador Colaborador) {
+        Usuario usuario = Colaborador.getUsuario();
 
         // Encriptar contraseña
         if (usuario.getPassword() == null || usuario.getPassword().isEmpty()) {
@@ -43,18 +40,24 @@ public class ClienteService {
         }
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 
-        // Asignar rol ROLE_CLIENTE
-        rolRepository.findById(1L).ifPresent(rol -> usuario.setRoles(Set.of(rol)));
+        // Asignar rol ROLE_Colaborador
+        rolRepository.findById(2L).ifPresent(rol -> usuario.setRoles(Set.of(rol)));
 
 
         // Guardar usuario primero
         usuarioRepository.save(usuario);
 
-        // Guardar cliente
-        return clienteRepository.save(cliente);
+        // Guardar Colaborador
+        return colaboradorRepository.save(Colaborador);
     }
 
-    public List<Cliente> findAll() {
-        return clienteRepository.findAll();
+    public List<Colaborador> findAll() {
+        return colaboradorRepository.findAll();
     }
+
+    public Optional<Colaborador> obtenerPorUsuario(Usuario usuario) {
+        return colaboradorRepository.findByUsuario(usuario);
+    }
+
+
 }

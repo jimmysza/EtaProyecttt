@@ -34,7 +34,8 @@
             </a>
             <ul class="nav-links">
 
-                <li><a th:href="@{/registro/cliente}">Registrarse</a></li>
+                <li th:if="${role == 'cliente'}"><a th:href="@{/registro/cliente}">Registrarse</a></li>
+                <li th:if="${role == 'colaborador'}"><a th:href="@{/registro/colaborador}">Registrarse</a></li>
             </ul>
         </nav>
     </div>
@@ -54,7 +55,10 @@
     <section class="Formulario">
         <img class="form-logo rounded-full" th:src="@{assets/images/logos/Logo.webp}" alt="Logo">
 
-        <h1>Continua como Cliente</h1>
+        <h1>
+            Continúa como
+            <span th:text="${role}"></span>
+        </h1>
 
         <form th:action="@{/login}" method="post">
 
@@ -95,7 +99,15 @@
 
             <div class="registrarse-contain">
                 <p>ya tienes cuenta en eta?</p>
-                <a th:href="@{/registro/cliente}">registrarse</a>
+
+                <div th:if="${role == 'cliente'}">
+                    <a th:href="@{/registro/cliente}">registrarse</a>
+
+                </div>
+                <div th:if="${role == 'colaborador'}">
+                    <a th:href="@{/registro/colaborador}">registrarse</a>
+                </div>
+
             </div>
         </form>
     </section>

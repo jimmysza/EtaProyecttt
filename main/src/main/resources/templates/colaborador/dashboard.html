@@ -21,9 +21,9 @@
     <!-- Sidebar -->
     <div class="side-bar flex flex-col">
         <div class="logo-manager">
-            <a href="/" class="info-dashboard">
+            <a href="colaborador/dashboard" class="info-dashboard">
                 <div class="id-content">
-                    <h1>Admin</h1>
+                    <h1>Colaborador</h1>
                     <p>Generador de Actividades</p>
                 </div>
             </a>
@@ -34,7 +34,7 @@
 
                     <p class="title-bar"> Platforma</p>
                     <li class="menu-link">
-                        <a th:href="@{/actividades}" sec:authorize="hasAnyRole('CLIENTE','COLABORADOR')">
+                        <a th:href="@{/colaborador/actividades}" sec:authorize="hasAnyRole('CLIENTE','COLABORADOR')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
                                  class="small-icon">
                                 <path fill="#000" fill-rule="evenodd"
@@ -48,7 +48,7 @@
                     </li>
 
                     <li class="menu-link">
-                        <a th:href="@{/actividades/lista}" sec:authorize="hasRole('COLABORADOR')">
+                        <a th:href="@{/colaborador/actividades}" sec:authorize="hasRole('COLABORADOR')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
                                 <path fill="#000"
                                       d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5v2H5v14h14v-5z"
@@ -63,7 +63,7 @@
                     </li>
 
                     <li class="menu-link">
-                        <a th:href="@{/Colaboradores}" sec:authorize="hasRole('COLABORADOR')">
+                        <a th:href="@{/colaborador/actividades}" sec:authorize="hasRole('COLABORADOR')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
                                 <path fill="#000"
                                       d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5v2H5v14h14v-5z"
